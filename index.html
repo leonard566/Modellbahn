@@ -5,15 +5,6 @@
   <title>Modellbahn Routenplan</title>
 
   <style>
-    .station-id {
-  font-weight: bold;
-}
-
-.station-name {
-  color: #888;
-  font-size: 13px;
-  margin-left: 6px;
-}
     body {
       font-family: Arial, sans-serif;
       background: #eef1f5;
@@ -34,7 +25,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    /* 📦 Stations */
+    /* 📦 Betriebsstellen */
     .stations {
       display: flex;
       flex-wrap: wrap;
@@ -47,6 +38,17 @@
       padding: 6px 10px;
       border-radius: 20px;
       font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .station-id {
+      font-weight: bold;
+    }
+
+    .station-name {
+      color: #888;       /* 👈 HIER ist dein Wunsch: grau */
+      font-size: 13px;
+      margin-left: 6px;
     }
 
     /* 🔎 Inputs */
@@ -125,10 +127,12 @@
 <script>
 
 const betriebsstellen = [
-  { id: "RESD1", name: "Depot Gleis 1" },
-  { id: "W15", name: "Weiche 15" },
-  { id: "RESW", name: "Wende Ost" },
-  { id: "RESD2", name: "Depot Gleis 2" }
+  { id: "RESD", name: "Eggenberg Straßebahndepot" },
+  { id: "REED", name: "Eisenbahndepot" },
+  { id: "REB", name: "Eggenberg Bahnhofstraße" },
+  { id: "REN", name: "Bahnhof Eggenberg-Neufeld" },
+  { id: "RENV", name: "Eggenberg-Neufeld Bahnhofsvorplatz" },
+  { id: "RE", name: "Eggenberg" },
 ];
 
 const routen = [
@@ -141,10 +145,16 @@ const routen = [
 
 // 📦 Stations anzeigen
 const stationBox = document.getElementById("stations");
+
 betriebsstellen.forEach(b => {
   const div = document.createElement("div");
   div.className = "station";
-  div.innerText = `${b.id} – ${b.name}`;
+
+  div.innerHTML = `
+    <span class="station-id">${b.id}</span>
+    <span class="station-name">${b.name}</span>
+  `;
+
   stationBox.appendChild(div);
 });
 
@@ -171,14 +181,13 @@ function berechneRoute() {
     return;
   }
 
-  const steps = route.path.map((id, index) => {
+  const steps = route.path.map(id => {
     const st = betriebsstellen.find(b => b.id === id);
     const label = st ? st.id : id;
     return `<span class="step">${label}</span>`;
   });
 
   output.innerHTML = steps.join('<span class="arrow">→</span>');
-
 }
 
 </script>
