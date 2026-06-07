@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Modellbahn Routenplan</title>
+  <title>Modellbahn Betriebsstellen</title>
 
   <style>
     body {
@@ -25,103 +25,41 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    /* 📦 Betriebsstellen */
-    .stations {
+    /* 📦 Betriebsstellen LISTE untereinander */
+    .station {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      align-items: baseline;
+      gap: 10px;
+
+      padding: 8px 10px;
+      border-bottom: 1px solid #eee;
     }
 
-    .station {
-      background: #f3f6fa;
-      border: 1px solid #d0d7e2;
-      padding: 6px 10px;
-      border-radius: 20px;
-      font-size: 14px;
-      white-space: nowrap;
+    .station:last-child {
+      border-bottom: none;
     }
 
     .station-id {
       font-weight: bold;
+      min-width: 80px;
     }
 
     .station-name {
-      color: #888;       /* 👈 HIER ist dein Wunsch: grau */
-      font-size: 13px;
-      margin-left: 6px;
-    }
-
-    /* 🔎 Inputs */
-    select, button {
-      padding: 8px;
-      margin: 5px 5px 5px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      color: #888; /* 👈 grau wie gewünscht */
       font-size: 14px;
     }
 
-    button {
-      background: #2b6cb0;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #1f4f86;
-    }
-
-    /* 🚆 Route */
-    .route {
-      font-size: 16px;
-      line-height: 1.8;
-      padding: 10px;
-    }
-
-    .step {
-      display: inline-block;
-      padding: 4px 8px;
-      margin: 3px;
-      background: #f3f6fa;
-      border-radius: 8px;
-      border: 1px solid #d0d7e2;
-    }
-
-    .arrow {
-      margin: 0 4px;
-      color: #888;
-    }
-
-    .title {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
   </style>
 </head>
 
 <body>
 
-<h2>🚆 Modellbahn Fahrweg-System</h2>
+<h2>🚆 Modellbahn Betriebsstellen</h2>
 
 <!-- 📦 Betriebsstellen -->
 <div class="card">
-  <div class="title">🏷️ Betriebsstellen</div>
-  <div id="stations" class="stations"></div>
-</div>
-
-<!-- 🔎 Suche -->
-<div class="card">
-  <div class="title">🔎 Route suchen</div>
-
-  <select id="start"></select>
-  <select id="ziel"></select>
-  <button onclick="berechneRoute()">Route anzeigen</button>
-</div>
-
-<!-- 🚆 Ergebnis -->
-<div class="card">
-  <div class="title">🚆 Fahrweg</div>
-  <div id="output" class="route">Noch keine Route gewählt.</div>
+  <div class="title">🏷️ Übersicht</div>
+  <div id="stations"></div>
 </div>
 
 <script>
@@ -132,18 +70,10 @@ const betriebsstellen = [
   { id: "REB", name: "Eggenberg Bahnhofstraße" },
   { id: "REN", name: "Bahnhof Eggenberg-Neufeld" },
   { id: "RENV", name: "Eggenberg-Neufeld Bahnhofsvorplatz" },
-  { id: "RE", name: "Eggenberg" },
+  { id: "RE", name: "Eggenberg" }
 ];
 
-const routen = [
-  {
-    from: "RESD1",
-    to: "RESD2",
-    path: ["RESD1", "W15", "RESW", "RESD2"]
-  }
-];
-
-// 📦 Stations anzeigen
+// 📦 Stations untereinander ausgeben
 const stationBox = document.getElementById("stations");
 
 betriebsstellen.forEach(b => {
@@ -157,38 +87,6 @@ betriebsstellen.forEach(b => {
 
   stationBox.appendChild(div);
 });
-
-// 🔽 Dropdowns
-const startSel = document.getElementById("start");
-const zielSel = document.getElementById("ziel");
-
-betriebsstellen.forEach(b => {
-  startSel.add(new Option(b.name, b.id));
-  zielSel.add(new Option(b.name, b.id));
-});
-
-// 🚆 Route berechnen
-function berechneRoute() {
-  const start = startSel.value;
-  const ziel = zielSel.value;
-
-  const route = routen.find(r => r.from === start && r.to === ziel);
-
-  const output = document.getElementById("output");
-
-  if (!route) {
-    output.innerHTML = "❌ Keine Route gefunden.";
-    return;
-  }
-
-  const steps = route.path.map(id => {
-    const st = betriebsstellen.find(b => b.id === id);
-    const label = st ? st.id : id;
-    return `<span class="step">${label}</span>`;
-  });
-
-  output.innerHTML = steps.join('<span class="arrow">→</span>');
-}
 
 </script>
 
