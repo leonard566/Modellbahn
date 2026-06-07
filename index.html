@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Modellbahn Routenplan</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+
+    .container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 20px;
+      background: #f8f8f8;
+    }
+
+    .station {
+      display: inline-block;
+      padding: 5px 10px;
+      margin: 5px;
+      background: white;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+    }
+
+    select, button { padding: 5px; margin: 5px; }
+
+    .route {
+      margin-top: 20px;
+      font-size: 18px;
+      padding: 10px;
+      border-top: 2px solid #333;
+    }
+  </style>
+</head>
+<body>
+
+<h2>🚆 Modellbahn Fahrweg-System</h2>
+
+<!-- 📦 1. Container mit allen Betriebsstellen -->
+<div class="container">
+  <h3>🏷️ Betriebsstellen</h3>
+  <div id="stations"></div>
+</div>
+
+<!-- 🔎 2. Suche -->
+<h3>🔎 Route suchen</h3>
+
+<label>Start:</label>
+<select id="start"></select>
+
+<label>Ziel:</label>
+<select id="ziel"></select>
+
+<button onclick="berechneRoute()">Route anzeigen</button>
+
+<!-- 🚆 3. Ergebnis -->
+<div class="route" id="output"></div>
+
+<script>
+
+const betriebsstellen = [
+  { id: "RESD1", name: "Depot Gleis 1" },
+  { id: "W15", name: "Weiche 15" },
+  { id: "RESW", name: "Wende Ost" },
+  { id: "RESD2", name: "Depot Gleis 2" }
+];
+
+const routen = [
+  {
+    from: "RESD1",
+    to: "RESD2",
+    path: ["RESD1", "W15", "RESW", "RESD2"]
+  }
+];
+
+// 📦 Stations-Container anzeigen
+const stationBox = document.getElementById("stations");
+betriebsstellen.forEach(b => {
+  const div = document.createElement("div");
+  div.className = "station";
+  div.innerText = `${b.id} – ${b.name}`;
+  stationBox.appendChild(div);
+});
+
+// 🔽 Dropdowns füllen
+const startSel = document.getElementById("start");
+const zielSel = document.getElementById("ziel");
+
+betriebsstellen.forEach(b => {
+  startSel.add(new Option(b.name, b.id));
+  zielSel.add(new Option(b.name, b.id));
+});
+
+// 🚆 Route berechnen
+function berechneRoute() {
+  const start = startSel.value;
+  const ziel = zielSel.value;
+
+  const route = routen.find(r => r.from === start && r.to === ziel);
+
+  const output = document.getElementById("output");
+
+  if (!route) {
+    output.innerHTML = "❌ Keine Route gefunden.";
+    return;
+  }
+
+  let text = route.path
+    .map(id => {
+      const st = betriebsstellen.find(b => b.id === id);
+      return st ? st.id : id;
+    })
+    .join(" → ");
+
+  // Symbole ergänzen
+  text = text.replaceAll("W15", "🔀 W15")
+             .replaceAll("RESW", "🔄 Wende Ost");
+
+  output.innerHTML = "🚆 " + text;
+}
+
+</script>
+
+</body>
+</html>
