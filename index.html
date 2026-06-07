@@ -3,58 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <title>Modellbahn Routenplan</title>
-  <style>
-    body { font-family: Arial; margin: 20px; }
 
-    .container {
-      border: 1px solid #ccc;
-      padding: 10px;
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef1f5;
+      margin: 0;
+      padding: 20px;
+      color: #222;
+    }
+
+    h2 {
       margin-bottom: 20px;
-      background: #f8f8f8;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* 📦 Stations */
+    .stations {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .station {
-      display: inline-block;
-      padding: 5px 10px;
-      margin: 5px;
-      background: white;
-      border: 1px solid #aaa;
-      border-radius: 5px;
+      background: #f3f6fa;
+      border: 1px solid #d0d7e2;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 14px;
     }
 
-    select, button { padding: 5px; margin: 5px; }
+    /* 🔎 Inputs */
+    select, button {
+      padding: 8px;
+      margin: 5px 5px 5px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
 
+    button {
+      background: #2b6cb0;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1f4f86;
+    }
+
+    /* 🚆 Route */
     .route {
-      margin-top: 20px;
-      font-size: 18px;
+      font-size: 16px;
+      line-height: 1.8;
       padding: 10px;
-      border-top: 2px solid #333;
+    }
+
+    .step {
+      display: inline-block;
+      padding: 4px 8px;
+      margin: 3px;
+      background: #f3f6fa;
+      border-radius: 8px;
+      border: 1px solid #d0d7e2;
+    }
+
+    .arrow {
+      margin: 0 4px;
+      color: #888;
+    }
+
+    .title {
+      font-weight: bold;
+      margin-bottom: 10px;
     }
   </style>
 </head>
+
 <body>
 
 <h2>🚆 Modellbahn Fahrweg-System</h2>
 
-<!-- 📦 1. Container mit allen Betriebsstellen -->
-<div class="container">
-  <h3>🏷️ Betriebsstellen</h3>
-  <div id="stations"></div>
+<!-- 📦 Betriebsstellen -->
+<div class="card">
+  <div class="title">🏷️ Betriebsstellen</div>
+  <div id="stations" class="stations"></div>
 </div>
 
-<!-- 🔎 2. Suche -->
-<h3>🔎 Route suchen</h3>
+<!-- 🔎 Suche -->
+<div class="card">
+  <div class="title">🔎 Route suchen</div>
 
-<label>Start:</label>
-<select id="start"></select>
+  <select id="start"></select>
+  <select id="ziel"></select>
+  <button onclick="berechneRoute()">Route anzeigen</button>
+</div>
 
-<label>Ziel:</label>
-<select id="ziel"></select>
-
-<button onclick="berechneRoute()">Route anzeigen</button>
-
-<!-- 🚆 3. Ergebnis -->
-<div class="route" id="output"></div>
+<!-- 🚆 Ergebnis -->
+<div class="card">
+  <div class="title">🚆 Fahrweg</div>
+  <div id="output" class="route">Noch keine Route gewählt.</div>
+</div>
 
 <script>
 
@@ -73,7 +130,7 @@ const routen = [
   }
 ];
 
-// 📦 Stations-Container anzeigen
+// 📦 Stations anzeigen
 const stationBox = document.getElementById("stations");
 betriebsstellen.forEach(b => {
   const div = document.createElement("div");
@@ -82,7 +139,7 @@ betriebsstellen.forEach(b => {
   stationBox.appendChild(div);
 });
 
-// 🔽 Dropdowns füllen
+// 🔽 Dropdowns
 const startSel = document.getElementById("start");
 const zielSel = document.getElementById("ziel");
 
@@ -105,18 +162,14 @@ function berechneRoute() {
     return;
   }
 
-  let text = route.path
-    .map(id => {
-      const st = betriebsstellen.find(b => b.id === id);
-      return st ? st.id : id;
-    })
-    .join(" → ");
+  const steps = route.path.map((id, index) => {
+    const st = betriebsstellen.find(b => b.id === id);
+    const label = st ? st.id : id;
+    return `<span class="step">${label}</span>`;
+  });
 
-  // Symbole ergänzen
-  text = text.replaceAll("W15", "🔀 W15")
-             .replaceAll("RESW", "🔄 Wende Ost");
+  output.innerHTML = steps.join('<span class="arrow">→</span>');
 
-  output.innerHTML = "🚆 " + text;
 }
 
 </script>
