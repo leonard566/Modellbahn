@@ -1,91 +1,150 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Modellbahn Betriebsstellen</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modellbahn Betriebsstellen</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #eef1f5;
-      margin: 0;
-      padding: 20px;
-      color: #222;
-    }
+    <style>
 
-    h2 {
-      margin-bottom: 20px;
-    }
+        *{
+            box-sizing:border-box;
+        }
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
+        body{
+            font-family:Arial,Helvetica,sans-serif;
+            background:#eef1f5;
+            margin:0;
+            color:#222;
+        }
 
-    /* 📦 Betriebsstellen LISTE untereinander */
-    .station {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
+        .container{
+            max-width:900px;
+            margin:auto;
+            padding:20px;
+        }
 
-      padding: 8px 10px;
-      border-bottom: 1px solid #eee;
-    }
+        h1{
+            margin:0 0 25px;
+            font-size:2rem;
+        }
 
-    .station:last-child {
-      border-bottom: none;
-    }
+        .card{
+            background:#fff;
+            border-radius:12px;
+            padding:20px;
+            box-shadow:0 3px 10px rgba(0,0,0,.08);
+        }
 
-    .station-id {
-      font-weight: bold;
-      min-width: 80px;
-    }
+        .title{
+            font-size:1.2rem;
+            font-weight:bold;
+            margin-bottom:15px;
+        }
 
-    .station-name {
-      color: #888; /* 👈 grau wie gewünscht */
-      font-size: 14px;
-    }
+        /* Betriebsstellen */
 
-  </style>
+        .station{
+            display:flex;
+            align-items:baseline;
+            gap:12px;
+            padding:10px 0;
+            border-bottom:1px solid #ececec;
+        }
+
+        .station:last-child{
+            border-bottom:none;
+        }
+
+        .station-id{
+            font-weight:bold;
+            font-size:16px;
+            min-width:90px;
+        }
+
+        .station-name{
+            color:#888;
+            font-size:15px;
+        }
+
+        /* Handy */
+
+        @media (max-width:700px){
+
+            .container{
+                padding:12px;
+            }
+
+            h1{
+                font-size:1.6rem;
+            }
+
+            .card{
+                padding:15px;
+            }
+
+            .station{
+                flex-direction:column;
+                align-items:flex-start;
+                gap:2px;
+                padding:12px 0;
+            }
+
+            .station-id{
+                min-width:auto;
+                font-size:17px;
+            }
+
+            .station-name{
+                font-size:14px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 <body>
 
-<h2>🚆 Modellbahn Betriebsstellen</h2>
+<div class="container">
 
-<!-- 📦 Betriebsstellen -->
-<div class="card">
-  <div class="title">🏷️ Übersicht</div>
-  <div id="stations"></div>
+    <h1>🚆 Modellbahn Betriebsstellen</h1>
+
+    <div class="card">
+
+        <div class="title">🏷️ Übersicht</div>
+
+        <div id="stations"></div>
+
+    </div>
+
 </div>
 
 <script>
 
 const betriebsstellen = [
-  { id: "RESD", name: "Eggenberg Straßebahndepot" },
-  { id: "REED", name: "Eisenbahndepot" },
-  { id: "REB", name: "Eggenberg Bahnhofstraße" },
-  { id: "REN", name: "Bahnhof Eggenberg-Neufeld" },
-  { id: "RENV", name: "Eggenberg-Neufeld Bahnhofsvorplatz" },
-  { id: "RE", name: "Eggenberg" }
+
+    { id: "RESD", name: "Eggenberg Straßenbahndepot" },
+    { id: "REED", name: "Eisenbahndepot" },
+    { id: "REB", name: "Eggenberg Bahnhofstraße" },
+    { id: "REN", name: "Bahnhof Eggenberg-Neufeld" },
+    { id: "RENV", name: "Eggenberg-Neufeld Bahnhofsvorplatz" },
+    { id: "RE", name: "Eggenberg" }
+
 ];
 
-// 📦 Stations untereinander ausgeben
 const stationBox = document.getElementById("stations");
 
-betriebsstellen.forEach(b => {
-  const div = document.createElement("div");
-  div.className = "station";
+betriebsstellen.forEach(station => {
 
-  div.innerHTML = `
-    <span class="station-id">${b.id}</span>
-    <span class="station-name">${b.name}</span>
-  `;
+    stationBox.innerHTML += `
+        <div class="station">
+            <div class="station-id">${station.id}</div>
+            <div class="station-name">${station.name}</div>
+        </div>
+    `;
 
-  stationBox.appendChild(div);
 });
 
 </script>
