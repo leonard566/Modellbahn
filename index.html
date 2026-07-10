@@ -1,107 +1,132 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modellbahn Betriebsstellen</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modellbahn Betriebsstellen</title>
 
-    <style>
+<style>
 
-        *{
-            box-sizing:border-box;
-        }
+*{
+    box-sizing:border-box;
+}
 
-        body{
-            font-family:Arial,Helvetica,sans-serif;
-            background:#eef1f5;
-            margin:0;
-            color:#222;
-        }
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#eef1f5;
+    margin:0;
+    color:#222;
+}
 
-        .container{
-            max-width:900px;
-            margin:auto;
-            padding:20px;
-        }
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
 
-        h1{
-            margin:0 0 25px;
-            font-size:2rem;
-        }
+h1{
+    margin:0 0 20px;
+    font-size:2rem;
+}
 
-        .card{
-            background:#fff;
-            border-radius:12px;
-            padding:20px;
-            box-shadow:0 3px 10px rgba(0,0,0,.08);
-        }
+.card{
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
 
-        .title{
-            font-size:1.2rem;
-            font-weight:bold;
-            margin-bottom:15px;
-        }
+.title{
+    font-size:1.2rem;
+    font-weight:bold;
+    margin-bottom:15px;
+}
 
-        /* Betriebsstellen */
+/* Betriebslage */
 
-        .station{
-            display:flex;
-            align-items:baseline;
-            gap:12px;
-            padding:10px 0;
-            border-bottom:1px solid #ececec;
-        }
+#betriebslageCard{
+    overflow:hidden;
+}
 
-        .station:last-child{
-            border-bottom:none;
-        }
+.laufband{
+    white-space:nowrap;
+    overflow:hidden;
+}
 
-        .station-id{
-            font-weight:bold;
-            font-size:16px;
-            min-width:90px;
-        }
+.laufband span{
+    display:inline-block;
+    padding-left:100%;
+    animation:laufband 22s linear infinite;
+    font-weight:bold;
+}
 
-        .station-name{
-            color:#888;
-            font-size:15px;
-        }
+@keyframes laufband{
 
-        /* Handy */
+    from{
+        transform:translateX(0);
+    }
 
-        @media (max-width:700px){
+    to{
+        transform:translateX(-100%);
+    }
 
-            .container{
-                padding:12px;
-            }
+}
 
-            h1{
-                font-size:1.6rem;
-            }
+/* Betriebsstellen */
 
-            .card{
-                padding:15px;
-            }
+.station{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    padding:10px 0;
+    border-bottom:1px solid #ececec;
+}
 
-            .station{
-                flex-direction:column;
-                align-items:flex-start;
-                gap:2px;
-                padding:12px 0;
-            }
+.station:last-child{
+    border-bottom:none;
+}
 
-            .station-id{
-                min-width:auto;
-                font-size:17px;
-            }
+.station-id{
+    font-weight:bold;
+    font-size:16px;
+    min-width:90px;
+}
 
-            .station-name{
-                font-size:14px;
-            }
+.station-name{
+    color:#888;
+    font-size:15px;
+}
 
-        }
+/* Handy */
 
-    </style>
+@media(max-width:700px){
+
+.container{
+    padding:12px;
+}
+
+h1{
+    font-size:1.6rem;
+}
+
+.card{
+    padding:15px;
+}
+
+.station{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+}
+
+.station-id{
+    min-width:auto;
+}
+
+}
+
+</style>
 
 </head>
 
@@ -109,41 +134,95 @@
 
 <div class="container">
 
-    <h1>🚆 Modellbahn Betriebsstellen</h1>
+<h1>🚆 Modellbahn Betriebsinformationen</h1>
 
-    <div class="card">
+<div class="card" id="betriebslageCard">
 
-        <div class="title">🏷️ Übersicht</div>
+<div class="title">🚨 Betriebslage</div>
 
-        <div id="stations"></div>
+<div class="laufband">
+<span id="betriebslage"></span>
+</div>
 
-    </div>
+</div>
+
+<div class="card">
+
+<div class="title">🏷️ Betriebsstellen</div>
+
+<div id="stations"></div>
+
+</div>
 
 </div>
 
 <script>
 
-const betriebsstellen = [
+/* ===========================
+   Betriebslage
+=========================== */
 
-    { id: "RESD", name: "Eggenberg Straßenbahndepot" },
-    { id: "REED", name: "Eisenbahndepot" },
-    { id: "REB", name: "Eggenberg Bahnhofstraße" },
-    { id: "REN", name: "Bahnhof Eggenberg-Neufeld" },
-    { id: "RENV", name: "Eggenberg-Neufeld Bahnhofsvorplatz" },
-    { id: "RE", name: "Eggenberg" }
+const betriebslage = [
+
+{
+    aktiv:true,
+    text:"🟡 Baustelle RESD – Gleis 2 gesperrt"
+},
+
+{
+    aktiv:false,
+    text:"🔴 Haltepunkt RENV gesperrt"
+},
+
+{
+    aktiv:true,
+    text:"🟡 Langsamfahrt zwischen RE und REB"
+}
 
 ];
 
-const stationBox = document.getElementById("stations");
+const aktiveMeldungen = betriebslage
+    .filter(m => m.aktiv)
+    .map(m => m.text);
 
-betriebsstellen.forEach(station => {
+if(aktiveMeldungen.length===0){
 
-    stationBox.innerHTML += `
-        <div class="station">
-            <div class="station-id">${station.id}</div>
-            <div class="station-name">${station.name}</div>
-        </div>
-    `;
+    document.getElementById("betriebslageCard").style.display="none";
+
+}else{
+
+    document.getElementById("betriebslage").innerHTML=
+        aktiveMeldungen.join(" &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; ");
+
+}
+
+/* ===========================
+   Betriebsstellen
+=========================== */
+
+const betriebsstellen=[
+
+{id:"RESD",name:"Eggenberg Straßenbahndepot"},
+{id:"REED",name:"Eisenbahndepot"},
+{id:"REB",name:"Eggenberg Bahnhofstraße"},
+{id:"REN",name:"Bahnhof Eggenberg-Neufeld"},
+{id:"RENV",name:"Eggenberg-Neufeld Bahnhofsvorplatz"},
+{id:"RE",name:"Eggenberg"}
+
+];
+
+const stationBox=document.getElementById("stations");
+
+betriebsstellen.forEach(station=>{
+
+stationBox.innerHTML+=`
+
+<div class="station">
+<div class="station-id">${station.id}</div>
+<div class="station-name">${station.name}</div>
+</div>
+
+`;
 
 });
 
